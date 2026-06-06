@@ -3,7 +3,7 @@ name: zenstack-schema-modeling
 description: Author ZModel (.zmodel) data schemas for ZenStack V3. Use when defining models, fields, field/model attributes, relations (1-1, 1-many, many-many, self), enums, custom types & mixins, polymorphic models (@@delegate), strongly-typed JSON fields, or computed fields.
 ---
 
-# ZenStack V3 — Schema Modeling (ZModel)
+# ZenStack — Schema Modeling (ZModel)
 
 ZModel is ZenStack's schema language — a superset of Prisma's schema. The schema lives at
 `zenstack/schema.zmodel` by default. After any change run `zen generate` (see
@@ -11,8 +11,8 @@ ZModel is ZenStack's schema language — a superset of Prisma's schema. The sche
 use `zenstack-querying`.
 
 Strings accept both single and double quotes. **Every valid Prisma schema is valid ZModel**, so
-existing Prisma knowledge transfers directly — the sections below focus on both the basics and the
-V3-only additions.
+existing Prisma knowledge transfers directly — the sections below cover both the basics and the
+additions ZModel layers on top.
 
 ## Datasource
 
@@ -26,8 +26,8 @@ datasource db {
 }
 ```
 
-> V3 has **no `generator` block**. Code generation is driven by `zen generate`; optional behavior is
-> configured with `plugin` blocks (e.g. `plugin policy`, `plugin prisma`).
+> ZModel has **no `generator` block**. Code generation is driven by `zen generate`; optional behavior
+> is configured with `plugin` blocks (e.g. `plugin policy`, `plugin prisma`).
 
 ## Models & fields
 
@@ -76,7 +76,7 @@ field / `@@unique([...])`.
 `autoincrement()`, `now()`, `cuid()`, `uuid()` / `uuid(4)`, `ulid()`, `nanoid()`,
 `dbgenerated("...")`, plus literals and enum values.
 
-V3.1.0+ string ID generators accept a `format` with `%s`:
+Since v3.1.0, string ID generators accept a `format` with `%s`:
 
 ```zmodel
 id String @id @default(uuid(4, "user_%s"))   // -> "user_<uuid>"
@@ -165,7 +165,7 @@ model Employee {
 author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 ```
 
-## Custom types & mixins (V3)
+## Custom types & mixins
 
 A `type` declaration is **not** backed by a table. Use it for typed JSON (below) or as a **mixin**
 of reusable fields, applied with `with`:
@@ -185,8 +185,8 @@ model Post with BaseFields {
 }
 ```
 
-Mixin fields are inlined into the model. Multiple mixins are allowed if names don't conflict. This
-replaces V2's `abstract model ... extends`.
+Mixin fields are inlined into the model. Multiple mixins are allowed if names don't conflict. This is
+ZModel's mechanism for sharing fields across models (use it instead of an abstract base model).
 
 A type may even carry relation fields (v3.6.0+), but then it can only be used as a mixin, not as a
 JSON field:
@@ -199,7 +199,7 @@ type AuditMixin {
 model Post with AuditMixin { title String }
 ```
 
-## Polymorphism — `@@delegate` (V3)
+## Polymorphism — `@@delegate`
 
 Multi-table inheritance: a base model with a discriminator field and `@@delegate`, concrete models
 using `extends`. Concrete and base rows share the same id; you create concrete models, never the
@@ -276,7 +276,7 @@ const db = new ZenStackClient(schema, {
 });
 ```
 
-## V3 vs Prisma — quick notes
+## ZModel additions over Prisma
 
 - No `generator` block (use `zen generate` + `plugin`s).
 - `type` declarations + `with` mixins, `@@delegate` polymorphism, `@json` typed JSON, and
