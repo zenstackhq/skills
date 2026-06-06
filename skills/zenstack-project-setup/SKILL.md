@@ -1,6 +1,6 @@
 ---
 name: zenstack-project-setup
-description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate, db push, migrate), managing database migrations, configuring logging, or upgrading from ZenStack V2. (For migrating a Prisma project, use the zenstack-migrate-from-prisma skill.)
+description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate, db push, migrate), managing database migrations, or configuring logging. (To migrate a Prisma project use zenstack-migrate-from-prisma; to upgrade from ZenStack V2 use zenstack-migrate-from-v2.)
 ---
 
 # ZenStack V3 — Project Setup & Migrations
@@ -122,20 +122,10 @@ generate/migrate scripts, and mapping Prisma custom generators and client extens
 
 ## Migrating from ZenStack V2
 
-1. Follow the `zenstack-migrate-from-prisma` skill first (V2 was Prisma-based).
-2. **Rename packages**: `zenstack` → `@zenstackhq/cli`, `@zenstackhq/runtime` → `@zenstackhq/orm`
-   (plus `@zenstackhq/schema`).
-3. **Access control is now a plugin**: install `@zenstackhq/plugin-policy`, add
-   `plugin policy { provider = '@zenstackhq/plugin-policy' }` to the schema, and wrap the client
-   with `db.$use(new PolicyPlugin())` / `.$setAuth(user)` (see `zenstack-access-control`).
-4. **Post-update policies**: `future().x` → use the `post-update` operation with `before()`:
-   `@@deny('update', future().ownerId != ownerId)` → `@@deny('post-update', ownerId != before().ownerId)`.
-5. **Abstract models → types + mixins**: `abstract model X {}` + `extends` →
-   `type X {}` + `with` (see `zenstack-schema-modeling`).
-6. **Server adapters**: pass an explicit `apiHandler` (`RPCApiHandler` / `RESTApiHandler`); the
-   former `getPrisma` is now `getClient`.
-7. **TanStack Query hooks** are now grouped: `useFindManyUser(...)` →
-   `useClientQueries(schema).user.useFindMany(...)`. SWR support was dropped.
+See the dedicated `zenstack-migrate-from-v2` skill — it covers the package renames, moving access
+control to the policy plugin, the `future()` → `post-update`/`before()` change, abstract models →
+types+mixins, the `getPrisma` → `getClient` server-adapter change, and the client-side hook
+migration.
 
 ## Logging
 

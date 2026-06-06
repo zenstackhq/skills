@@ -46,8 +46,9 @@ npx skills use zenstackhq/skills@zenstack-access-control | claude
 
 | Skill | What it covers |
 | ----- | -------------- |
-| [`zenstack-project-setup`](skills/zenstack-project-setup/SKILL.md) | Installing ZenStack V3, scaffolding a project, the `zen` CLI, the migration workflow, logging, and upgrading from ZenStack V2. |
+| [`zenstack-project-setup`](skills/zenstack-project-setup/SKILL.md) | Installing ZenStack V3, scaffolding a project, the `zen` CLI, the migration workflow, and logging. |
 | [`zenstack-migrate-from-prisma`](skills/zenstack-migrate-from-prisma/SKILL.md) | Migrating an existing Prisma project to ZenStack V3: dependencies, schema conversion, client swap, scripts, custom generators, and client extensions. |
+| [`zenstack-migrate-from-v2`](skills/zenstack-migrate-from-v2/SKILL.md) | Upgrading a ZenStack V2 project to V3: package renames, policy plugin, `post-update`/`before()`, types+mixins, server-adapter and TanStack Query hook changes. |
 | [`zenstack-schema-modeling`](skills/zenstack-schema-modeling/SKILL.md) | Authoring `.zmodel` schemas: models, fields, relations, enums, custom types & mixins, polymorphism, typed JSON, and computed fields. |
 | [`zenstack-access-control`](skills/zenstack-access-control/SKILL.md) | Access policies (`@@allow`/`@@deny`), the `auth()` function, field-level rules, post-update rules, and data validation. |
 | [`zenstack-querying`](skills/zenstack-querying/SKILL.md) | Creating the `ZenStackClient`, the Prisma-compatible ORM API, relation queries, transactions, the Kysely query builder, and error handling. |
@@ -66,6 +67,7 @@ skills/
   zenstack-querying/SKILL.md
   zenstack-crud-server/SKILL.md
   zenstack-migrate-from-prisma/SKILL.md
+  zenstack-migrate-from-v2/SKILL.md
 ```
 
 Each skill is a directory containing a `SKILL.md` file with YAML frontmatter (`name`,
