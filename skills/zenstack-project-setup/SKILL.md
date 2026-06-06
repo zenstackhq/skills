@@ -1,6 +1,6 @@
 ---
 name: zenstack-project-setup
-description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate, db push, migrate), managing database migrations, or migrating an existing app from Prisma or ZenStack V2.
+description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate, db push, migrate), managing database migrations, configuring logging, or upgrading from ZenStack V2. (For migrating a Prisma project, use the zenstack-migrate-from-prisma skill.)
 ---
 
 # ZenStack V3 — Project Setup & Migrations
@@ -116,38 +116,13 @@ zen migrate deploy
 
 ## Migrating from Prisma
 
-PostgreSQL, MySQL, and SQLite are supported.
-
-1. **Swap deps**: `npm uninstall prisma @prisma/client`; install
-   `@zenstackhq/schema @zenstackhq/orm` (+ `-D @zenstackhq/cli`) and a DB driver.
-2. **Move the schema**: `schema.prisma` → `zenstack/schema.zmodel` — every valid Prisma schema is
-   valid ZModel, so no edits required. You may drop the `generator client { ... }` block (no effect
-   in ZenStack).
-3. **Generation**: change the `generate` script to `zen generate`.
-4. **Client**: replace `new PrismaClient()` with `new ZenStackClient(schema, { dialect })` (see
-   `zenstack-querying` for dialect setup).
-5. **Types**: import model types from generated `models`, input types from generated `input`.
-6. **Migration scripts**: `zen db push` / `zen migrate dev` / `zen migrate deploy`.
-
-If you used Prisma custom generators, keep emitting a Prisma schema via the `@core/prisma` plugin:
-
-```zmodel
-plugin prisma {
-    provider = '@core/prisma'
-    output = './schema.prisma'
-}
-```
-
-```json
-{ "scripts": { "generate": "zen generate && prisma generate --schema=zenstack/schema.prisma" } }
-```
-
-Prisma Client extensions map to ZenStack: query extensions → `$use()` with an `onQuery` hook;
-result/computed fields → `@computed` + the `computedFields` client option.
+See the dedicated `zenstack-migrate-from-prisma` skill — it walks through swapping dependencies,
+converting `schema.prisma` to ZModel, replacing `PrismaClient` with `ZenStackClient`, updating the
+generate/migrate scripts, and mapping Prisma custom generators and client extensions.
 
 ## Migrating from ZenStack V2
 
-1. Follow the Prisma migration steps above first (V2 was Prisma-based).
+1. Follow the `zenstack-migrate-from-prisma` skill first (V2 was Prisma-based).
 2. **Rename packages**: `zenstack` → `@zenstackhq/cli`, `@zenstackhq/runtime` → `@zenstackhq/orm`
    (plus `@zenstackhq/schema`).
 3. **Access control is now a plugin**: install `@zenstackhq/plugin-policy`, add
