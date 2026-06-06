@@ -50,6 +50,7 @@ npx skills use zenstackhq/skills@zenstack-access-control | claude
 | [`zenstack-schema-modeling`](skills/zenstack-schema-modeling/SKILL.md) | Authoring `.zmodel` schemas: models, fields, relations, enums, custom types & mixins, polymorphism, typed JSON, and computed fields. |
 | [`zenstack-access-control`](skills/zenstack-access-control/SKILL.md) | Access policies (`@@allow`/`@@deny`), the `auth()` function, field-level rules, post-update rules, and data validation. |
 | [`zenstack-querying`](skills/zenstack-querying/SKILL.md) | Creating the `ZenStackClient`, the Prisma-compatible ORM API, relation queries, transactions, the Kysely query builder, and error handling. |
+| [`zenstack-crud-server`](skills/zenstack-crud-server/SKILL.md) | Automatic CRUD web APIs ("Query as a Service"): RPC/REST handlers, server adapters (Express, Next.js, Fastify, Nuxt, SvelteKit, Hono, Elysia, TanStack Start), client SDKs (fetch-client, TanStack Query), and OpenAPI generation. |
 
 All skills target **ZenStack V3** (the current major line). The full product documentation lives at
 [zenstack.dev/docs](https://zenstack.dev/docs).
@@ -62,6 +63,7 @@ skills/
   zenstack-schema-modeling/SKILL.md
   zenstack-access-control/SKILL.md
   zenstack-querying/SKILL.md
+  zenstack-crud-server/SKILL.md
 ```
 
 Each skill is a directory containing a `SKILL.md` file with YAML frontmatter (`name`,
