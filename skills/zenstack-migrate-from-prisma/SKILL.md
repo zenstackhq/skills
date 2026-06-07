@@ -106,8 +106,9 @@ Most code relies on inferred types and needs no explicit imports.
 }
 ```
 
-Your existing Prisma migration history under `prisma/migrations` continues to work since ZenStack
-migrate wraps Prisma Migrate. See `zenstack-project-setup` for the full migration workflow.
+Move your existing migration history from `prisma/migrations` to `zenstack/migrations` (ZenStack's
+default location, next to `zenstack/schema.zmodel`). It continues to work unchanged since ZenStack
+migrate wraps Prisma Migrate. See the `zenstack-db-migration` skill for the full migration workflow.
 
 ## Special case — Prisma custom generators
 

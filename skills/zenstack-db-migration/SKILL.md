@@ -8,8 +8,9 @@ description: Manage database schema migrations in ZenStack V3. Use when creating
 ZenStack keeps your database schema in sync with your ZModel data model. Migration is built on top
 of [Prisma Migrate](https://www.prisma.io/docs/orm/prisma-migrate): the `zen` CLI generates a Prisma
 schema from your ZModel under the hood and wraps the corresponding Prisma command. If you know Prisma
-Migrate, the workflow is identical — just swap `prisma` for `zen`. Existing `prisma/migrations`
-history continues to work unchanged.
+Migrate, the workflow is identical — just swap `prisma` for `zen`. Existing migration history keeps
+working once moved into ZenStack's layout (`prisma/migrations` → `zenstack/migrations`, the default
+location next to `zenstack/schema.zmodel`).
 
 This skill assumes a project is already set up (see `zenstack-project-setup`). Schema authoring is in
 `zenstack-schema-modeling`. `@zenstackhq/cli` carries a peer dependency on `prisma`, installed
@@ -151,9 +152,10 @@ fields) → `zen generate`. See `zenstack-project-setup`.
 
 ## Adopting from Prisma
 
-Because migration wraps Prisma Migrate, an existing `prisma/migrations` directory keeps working —
-just replace `prisma migrate ...` / `prisma db ...` scripts with the `zen` equivalents. Full
-framework migration is covered by `zenstack-migrate-from-prisma`.
+Because migration wraps Prisma Migrate, your existing migration history keeps working once you move
+the `prisma/migrations` directory to `zenstack/migrations` (ZenStack's default, next to
+`zenstack/schema.zmodel`) and replace the `prisma migrate ...` / `prisma db ...` scripts with the
+`zen` equivalents. Full framework migration is covered by `zenstack-migrate-from-prisma`.
 
 ## Reference docs
 
