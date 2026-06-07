@@ -6,14 +6,18 @@ description: Author ZModel (.zmodel) data schemas for ZenStack V3. Use when defi
 # ZenStack — Schema Modeling (ZModel)
 
 ZModel is ZenStack's schema language — a superset of Prisma's schema. The schema lives at
-`zenstack/schema.zmodel` by default. After editing it, run **`zen check`** to validate it for syntax
-and semantic errors, then `zen generate` to refresh the generated types (see
-`zenstack-project-setup`). For access policies/validation use `zenstack-access-control`; for queries
-use `zenstack-querying`.
+`zenstack/schema.zmodel` by default. For access policies/validation use `zenstack-access-control`;
+for queries use `zenstack-querying`.
+
+After editing the schema:
 
 ```bash
-zen check   # validate zenstack/schema.zmodel (use --schema <file> for a non-default path)
+zen check      # only validate the schema for syntax/semantic errors (use --schema <file> for a non-default path)
+zen generate   # regenerate the database client — also validates the schema as it compiles
 ```
+
+Run `zen check` when you just want to confirm the schema is valid; run `zen generate` when you want
+to regenerate the client (the normal step after a schema change).
 
 Strings accept both single and double quotes. **Every valid Prisma schema is valid ZModel**, so
 existing Prisma knowledge transfers directly — the sections below cover both the basics and the
