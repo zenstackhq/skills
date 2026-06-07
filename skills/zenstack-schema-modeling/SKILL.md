@@ -282,3 +282,21 @@ const db = new ZenStackClient(schema, {
 - `type` declarations + `with` mixins, `@@delegate` polymorphism, `@json` typed JSON, and
   `@computed` fields are ZenStack additions Prisma lacks.
 - Single or double quotes are both fine.
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [modeling-overview.md](references/modeling-overview.md) — data modeling concepts
+- [datasource.md](references/datasource.md) — the `datasource` block
+- [model.md](references/model.md) — models, fields, ids, defaults
+- [attribute.md](references/attribute.md) — field & model attributes
+- [relation.md](references/relation.md) — 1-1, 1-many, many-many, self relations
+- [enum.md](references/enum.md) — enums
+- [custom-type.md](references/custom-type.md) — `type` declarations
+- [mixin.md](references/mixin.md) — reusable field mixins (`with`)
+- [polymorphism.md](references/polymorphism.md) — `@@delegate` polymorphic models
+- [typed-json.md](references/typed-json.md) — strongly-typed JSON fields
+- [computed-fields.md](references/computed-fields.md) — `@computed` fields
+- [zmodel-attribute-reference.md](references/zmodel-attribute-reference.md) — complete attribute reference
+- [zmodel-function-reference.md](references/zmodel-function-reference.md) — attribute-function reference

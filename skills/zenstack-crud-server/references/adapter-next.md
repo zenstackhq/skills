@@ -1,0 +1,1 @@
+../../../references/reference/server-adapters/next.md

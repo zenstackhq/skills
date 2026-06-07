@@ -1,0 +1,1 @@
+../../../references/service/server-adapter.md

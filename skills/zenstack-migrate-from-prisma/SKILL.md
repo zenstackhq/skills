@@ -141,3 +141,9 @@ ZenStack's value-add features (access control, query builder escape hatch, auto 
 > Already on **ZenStack V2**? Start here (V2 was Prisma-based), then apply the V2→V3 deltas in
 > `zenstack-project-setup` (package renames, policy plugin, `post-update`/`before()`, types+mixins,
 > grouped hooks).
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [migrate-prisma.md](references/migrate-prisma.md) — official "Migrating from Prisma" guide

@@ -203,3 +203,17 @@ read policy). `REJECTED_BY_POLICY` further carries `rejectedByPolicyReason`: `NO
   the policy plugin is installed only via `new PolicyPlugin({ dangerouslyAllowRawSql: true })`
   (v3.5.0+).
 - Field validation applies to ORM APIs only, not the query builder.
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [access-control-overview.md](references/access-control-overview.md) — how access control works
+- [write-policies.md](references/write-policies.md) — `@@allow`/`@@deny`, `auth()`, expressions
+- [enforcing-policies.md](references/enforcing-policies.md) — policy plugin + `$setAuth` runtime
+- [post-update.md](references/post-update.md) — `post-update` rules and `before()`
+- [field-level.md](references/field-level.md) — field-level read/update policies
+- [validation.md](references/validation.md) — data validation
+- [input-validation-reference.md](references/input-validation-reference.md) — validation attribute reference
+- [zmodel-expression-reference.md](references/zmodel-expression-reference.md) — policy/validation expression reference
+- [policy-plugin-reference.md](references/policy-plugin-reference.md) — policy plugin options

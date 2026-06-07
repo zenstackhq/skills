@@ -139,3 +139,15 @@ const db = new ZenStackClient(schema, {
 ```
 
 The `log` option is forwarded to the underlying Kysely instance.
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [prerequisite.md](references/prerequisite.md) — supported Node/TypeScript versions, IDE setup
+- [quick-start.md](references/quick-start.md) — scaffolding and the install paths
+- [cli.md](references/cli.md) — overview of every `zen` CLI command
+- [cli-reference.md](references/cli-reference.md) — full CLI reference
+- [migration.md](references/migration.md) — dev/production migration workflow
+- [introspection.md](references/introspection.md) — `zen db pull` from an existing database
+- [logging.md](references/logging.md) — client logging configuration

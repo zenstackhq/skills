@@ -290,3 +290,21 @@ app.get('/api/openapi.json', async (_req, res) => {
 Options: `title` (default `'ZenStack Generated API'`), `version` (default `'1.0.0'`), `description`,
 `summary`, `respectAccessPolicies` (default false). `queryOptions.slicing`/`omit` on the handler
 also shape what appears in the spec.
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [service-overview.md](references/service-overview.md) — automatic CRUD service overview
+- [server-adapter.md](references/server-adapter.md) — server adapter concepts
+- [api-handler-overview.md](references/api-handler-overview.md) — API handlers overview
+- [api-handler-rpc.md](references/api-handler-rpc.md) — RPC API handler
+- [api-handler-rest.md](references/api-handler-rest.md) — RESTful API handler
+- [client-sdk-overview.md](references/client-sdk-overview.md) — client SDK overview
+- [fetch-client.md](references/fetch-client.md) — fetch client
+- [tanstack-query.md](references/tanstack-query.md) — TanStack Query hooks
+- [openapi-overview.md](references/openapi-overview.md) — OpenAPI overview
+- [openapi-rpc.md](references/openapi-rpc.md) — OpenAPI for RPC
+- [openapi-restful.md](references/openapi-restful.md) — OpenAPI for REST
+- [api-reference.md](references/api-reference.md) — server API reference
+- Server adapters: [express](references/adapter-express.md), [fastify](references/adapter-fastify.md), [next](references/adapter-next.md), [nuxt](references/adapter-nuxt.md), [sveltekit](references/adapter-sveltekit.md), [hono](references/adapter-hono.md), [elysia](references/adapter-elysia.md), [tanstack-start](references/adapter-tanstack-start.md)

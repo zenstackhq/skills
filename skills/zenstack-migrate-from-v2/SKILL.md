@@ -145,3 +145,9 @@ const { data } = client.user.useFindMany({ where: { ... } });
 Run `zen generate`, typecheck, and exercise your test suite / app. Confirm access control behaves as
 expected now that it's an explicit `$use(new PolicyPlugin())` + `$setAuth()` flow rather than V2's
 implicit `enhance()`.
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [migrate-v2.md](references/migrate-v2.md) — official "Migrating from ZenStack v2" guide

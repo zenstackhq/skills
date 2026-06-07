@@ -237,3 +237,25 @@ try {
     }
 }
 ```
+
+## Reference docs
+
+Full ZenStack documentation for this topic is bundled under [`references/`](references/):
+
+- [client.md](references/client.md) — creating the `ZenStackClient` (SQLite/Postgres/MySQL dialects)
+- [orm-overview.md](references/orm-overview.md) — ORM overview
+- [api-overview.md](references/api-overview.md) — ORM API overview
+- [api-find.md](references/api-find.md) — find operations
+- [api-create.md](references/api-create.md) — create / nested writes
+- [api-update.md](references/api-update.md) — update / upsert / nested writes
+- [api-delete.md](references/api-delete.md) — delete operations
+- [api-filter.md](references/api-filter.md) — filter operators
+- [api-aggregate.md](references/api-aggregate.md) — aggregate
+- [api-count.md](references/api-count.md) — count
+- [api-group-by.md](references/api-group-by.md) — groupBy
+- [api-transaction.md](references/api-transaction.md) — `$transaction`
+- [api-raw-sql.md](references/api-raw-sql.md) — raw SQL
+- [query-builder.md](references/query-builder.md) — the Kysely `$qb` escape hatch
+- [custom-procedures.md](references/custom-procedures.md) — custom procedures
+- [inferred-types.md](references/inferred-types.md) — inferred model/input types
+- [errors.md](references/errors.md) — `ORMError` and error reasons
