@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# This file is NOT used by the skills repo. Copy it into the
+# zenstackhq/zenstack-docs repository as `.github/workflows/notify-skills.yml`.
+#
+# It fires a `repository_dispatch` (type: docs-updated) at zenstackhq/skills
+# every time docs `main` is pushed, which triggers .github/workflows/sync-docs.yml
+# here to update the submodule and regenerate references/.
+#
+# Prerequisite: add a secret `SKILLS_DISPATCH_TOKEN` to the zenstack-docs repo —
+# a Personal Access Token with write access to zenstackhq/skills:
+#   - Classic PAT:      `repo` scope
+#   - Fine-grained PAT:  repository = zenstackhq/skills, Contents: Read and write
+# ─────────────────────────────────────────────────────────────────────────────
+name: Notify skills repo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch docs-updated to zenstackhq/skills
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${{ secrets.SKILLS_DISPATCH_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/zenstackhq/skills/dispatches \
+            -d '{"event_type":"docs-updated"}'

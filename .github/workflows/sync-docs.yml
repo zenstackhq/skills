@@ -1,0 +1,61 @@
+name: Sync docs & regenerate references
+
+# Triggered when the zenstackhq/zenstack-docs repo pushes to main, via a
+# repository_dispatch event sent from that repo (see the sender workflow in
+# .github/sender-workflow.example.yml — add it to zenstack-docs).
+# Also runnable manually from the Actions tab.
+on:
+  repository_dispatch:
+    types: [docs-updated]
+  workflow_dispatch:
+
+# Never let two syncs race on the same branch.
+concurrency:
+  group: sync-docs
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # submodules are populated explicitly below so we can bump docs to
+        # the latest main rather than its pinned commit
+
+      - name: Update docs submodule to latest main
+        run: |
+          git submodule sync docs
+          # bump the `docs` submodule to the tip of its tracked branch (main)
+          git submodule update --init --remote docs
+          # populate docs' own nested submodules (code-repos/*) at the
+          # commits pinned by the freshly-updated docs
+          git -C docs submodule update --init --recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate references
+        run: npm run generate:references
+
+      - name: Commit & push changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          docs_sha="$(git -C docs rev-parse --short HEAD)"
+          git commit -m "chore: sync docs (${docs_sha}) and regenerate references"
+          git push
