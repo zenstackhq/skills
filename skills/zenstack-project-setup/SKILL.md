@@ -1,6 +1,6 @@
 ---
 name: zenstack-project-setup
-description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate, db push, migrate), managing database migrations, or configuring logging. (To migrate a Prisma project use zenstack-migrate-from-prisma; to upgrade from ZenStack V2 use zenstack-migrate-from-v2.)
+description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate), or configuring logging. (For database schema migrations use zenstack-db-migration; to migrate a Prisma project use zenstack-migrate-from-prisma; to upgrade from ZenStack V2 use zenstack-migrate-from-v2.)
 ---
 
 # ZenStack V3 — Project Setup & Migrations
@@ -89,6 +89,9 @@ The CLI is invoked as `zen` (or `zenstack` — equivalent). Add scripts to `pack
 
 > Migration commands wrap Prisma Migrate; `@zenstackhq/cli` has a peer dependency on `prisma` that
 > is installed automatically when needed.
+
+For the full migration story — `migrate dev`/`deploy`/`reset`/`status`/`resolve`, `db push`/`pull`,
+seeding, `--create-only`, and deployment-pipeline guidance — see the `zenstack-db-migration` skill.
 
 ## Workflows
 
