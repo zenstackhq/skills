@@ -1,6 +1,6 @@
 ---
 name: zenstack-querying
-description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), data validation on writes (@email/@length/@@validate), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, logging, or handling ORMError.
+description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), computed fields, polymorphic models, strongly-typed JSON, data validation on writes (@email/@length/@@validate), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, logging, or handling ORMError.
 ---
 
 # ZenStack V3 — Querying
@@ -128,6 +128,83 @@ await db.user.findMany({
 
 Nested writes inside `create`/`update`/`upsert` can `create`, `connect`, `disconnect`, update, and
 delete related records (deeply), all within a transaction.
+
+## Computed fields
+
+A field declared `@computed` in ZModel (see `zenstack-schema-modeling`) is evaluated **on the
+database side**. Provide its implementation as a Kysely expression in the `computedFields` client
+option; thereafter it behaves like a regular field — returned by queries, and usable in `select`,
+`where`, `orderBy`, and `aggregate`.
+
+```ts
+const db = new ZenStackClient(schema, {
+    dialect,
+    computedFields: {
+        User: {
+            // SQL: (SELECT COUNT(*) FROM "Post" WHERE "Post"."authorId" = "User"."id")
+            postCount: (eb) =>
+                eb.selectFrom('Post')
+                    .whereRef('Post.authorId', '=', 'id')
+                    .select(({ fn }) => fn.countAll<number>().as('count')), // selection must be named
+        },
+    },
+});
+
+await db.user.findFirst();                                   // postCount included
+await db.user.findFirst({ select: { email: true, postCount: true } });
+await db.user.findMany({ where: { postCount: { gt: 1 } }, orderBy: { postCount: 'desc' } });
+await db.user.aggregate({ _avg: { postCount: true } });
+```
+
+The callback's second arg is a `context` with `modelAlias` — use `sql.ref(\`${modelAlias}.id\`)`
+(import `sql` from `@zenstackhq/orm/helpers`) to qualify the containing model's columns on conflicts.
+
+## Polymorphic models
+
+For models using `@@delegate` inheritance (see `zenstack-schema-modeling`), query via the usual model
+accessors:
+
+- **Create** concrete models (`db.video.create(...)`) — the base row is created automatically. Base
+  models **cannot** be created directly.
+- **Query a base** model (`db.content.findMany()`) and each result includes the concrete model's
+  fields (unless you narrow with `select`). Querying a concrete model returns base + concrete fields.
+- **Delete** either side and the counterpart row is removed too.
+
+```ts
+const user = await db.user.create({ data: { email: 'u1@test.com' } });
+await db.post.create({ data: { name: 'Post1', content: 'Hi', ownerId: user.id } });
+await db.video.create({ data: { name: 'Video1', url: 'http://v/1', ownerId: user.id } });
+
+const content = await db.content.findFirstOrThrow();   // includes concrete fields
+await db.user.findFirstOrThrow({ include: { contents: true } });
+```
+
+The discriminator value is typed as a string literal (or enum member), so checking it **narrows** the
+result type to the matching concrete model:
+
+```ts
+const c = await db.content.findUniqueOrThrow({ where: { id: 1 } });
+if (c.type === 'video') console.log(c.url);    // narrowed to Video
+else if (c.type === 'image') console.log(c.data);
+```
+
+## Strongly-typed JSON
+
+A field typed with a custom `type` + `@json` (see `zenstack-schema-modeling`) is returned **strongly
+typed** (derived from the ZModel type), and inputs are validated against that type on
+create/update. Validation is *loose* — extra fields not in the type are allowed.
+
+```ts
+// query results are typed: user.profile.age / user.profile.gender
+const user = await db.user.create({
+    data: { email: 'u1@test.com', profile: { gender: 'male', age: 20 } },
+});
+
+await db.user.update({
+    where: { id: user.id },
+    data: { profile: { ...user.profile, tag: 'vip' } }, // extra `tag` is allowed
+});
+```
 
 ## Data validation
 
@@ -313,6 +390,9 @@ Full ZenStack documentation for this topic is bundled under [`references/`](refe
 - [api-raw-sql.md](references/api-raw-sql.md) — raw SQL
 - [query-builder.md](references/query-builder.md) — the Kysely `$qb` escape hatch
 - [custom-procedures.md](references/custom-procedures.md) — custom procedures
+- [computed-fields.md](references/computed-fields.md) — computed fields at runtime
+- [polymorphism.md](references/polymorphism.md) — querying polymorphic models
+- [typed-json.md](references/typed-json.md) — strongly-typed JSON fields at runtime
 - [validation.md](references/validation.md) — data validation
 - [input-validation-reference.md](references/input-validation-reference.md) — validation attribute reference
 - [inferred-types.md](references/inferred-types.md) — inferred model/input types
