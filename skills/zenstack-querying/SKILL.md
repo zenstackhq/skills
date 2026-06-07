@@ -1,6 +1,6 @@
 ---
 name: zenstack-querying
-description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), data validation on writes (@email/@length/@@validate), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, or handling ORMError.
+description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), data validation on writes (@email/@length/@@validate), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, logging, or handling ORMError.
 ---
 
 # ZenStack V3 — Querying
@@ -261,6 +261,20 @@ const affected = await db.$executeRaw`UPDATE "User" SET name = ${name} WHERE id 
 Raw SQL bypasses access control; with the policy plugin installed it requires
 `dangerouslyAllowRawSql`.
 
+## Logging
+
+Pass a `log` option to `ZenStackClient` — an array of levels, or a function. It's forwarded to the
+underlying Kysely instance.
+
+```ts
+const db = new ZenStackClient(schema, {
+    dialect,
+    log: ['query', 'error'],
+    // or a function:
+    // log: (event) => console.log(`[${event.level}] ${event.queryDurationMillis}ms`),
+});
+```
+
 ## Error handling
 
 All ORM errors are `ORMError`. Inspect `error.reason` (`CONFIG_ERROR`, `INVALID_INPUT`, `NOT_FOUND`,
@@ -302,4 +316,5 @@ Full ZenStack documentation for this topic is bundled under [`references/`](refe
 - [validation.md](references/validation.md) — data validation
 - [input-validation-reference.md](references/input-validation-reference.md) — validation attribute reference
 - [inferred-types.md](references/inferred-types.md) — inferred model/input types
+- [logging.md](references/logging.md) — client logging configuration
 - [errors.md](references/errors.md) — `ORMError` and error reasons

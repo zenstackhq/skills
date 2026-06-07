@@ -1,6 +1,6 @@
 ---
 name: zenstack-project-setup
-description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, running the `zen` CLI (generate), or configuring logging. (For database schema migrations use zenstack-db-migration; to migrate a Prisma project use zenstack-migrate-from-prisma; to upgrade from ZenStack V2 use zenstack-migrate-from-v2.)
+description: Set up, configure, and manage a ZenStack V3 project. Use when installing ZenStack, scaffolding a new project, or running the `zen` CLI (generate). (For database schema migrations use zenstack-db-migration; to migrate a Prisma project use zenstack-migrate-from-prisma; to upgrade from ZenStack V2 use zenstack-migrate-from-v2.)
 ---
 
 # ZenStack V3 — Project Setup & Migrations
@@ -131,19 +131,6 @@ control to the policy plugin, the `future()` → `post-update`/`before()` change
 types+mixins, the `getPrisma` → `getClient` server-adapter change, and the client-side hook
 migration.
 
-## Logging
-
-```ts
-const db = new ZenStackClient(schema, {
-    dialect,
-    log: ['query', 'error'],
-    // or a function:
-    // log: (event) => console.log(`[${event.level}] ${event.queryDurationMillis}ms`),
-});
-```
-
-The `log` option is forwarded to the underlying Kysely instance.
-
 ## Reference docs
 
 Full ZenStack documentation for this topic is bundled under [`references/`](references/):
@@ -154,4 +141,3 @@ Full ZenStack documentation for this topic is bundled under [`references/`](refe
 - [cli-reference.md](references/cli-reference.md) — full CLI reference
 - [migration.md](references/migration.md) — dev/production migration workflow
 - [introspection.md](references/introspection.md) — `zen db pull` from an existing database
-- [logging.md](references/logging.md) — client logging configuration
