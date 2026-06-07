@@ -1,0 +1,43 @@
+# Community Packages
+
+ZenStack plugins built by our awesome community members :heart:.
+
+- [zmodel-to-dart](https://pub.dev/packages/zmodel_to_dart)
+
+    A Dart builder that generates DTO classes from .zmodel files. Made by [Israel Lins Albuquerque](https://github.com/israelins85).
+
+- [zenstack-docs-plugin](https://github.com/sheldonj/zenstack-docs-plugin)
+
+    Automatically generates rich, browseable Markdown documentation from your ZModel schema. Made by [James Sheldon](https://github.com/sheldonj).
+
+- [Stratal](https://stratal.dev)
+
+    [Stratal](https://stratal.dev/) is a modular framework for building Cloudflare Workers with dependency injection, OpenAPI documentation, queues, cron jobs, and more. It integrates ZenStack via its `DatabaseModule`, providing multi-connection support, a built-in plugin system (error handling, event emitting, schema switching for multi-tenancy), and request-scoped database services with full type safety. Made by [Temitayo Fadojutimi](https://github.com/adesege).
+
+- [zenstack-validator](https://www.npmjs.com/package/zenstack-validator)
+
+    Auto-generate [class-validator](https://www.npmjs.com/package/class-validator) DTOs with validation logic directly from your ZModel schema.
+
+- [zenstack-encrypt](https://github.com/genu/zenstack-encryption)
+
+    Transparent field-level encryption and decryption using the `@encrypted` attribute. Made by [Eugen Istoc](https://github.com/genu).
+
+- [zenstack-cache](https://github.com/visualbravo/zenstack-cache)
+
+    Reduce response times and database load with query-level caching integrated with the ZenStack ORM. Made by [@sanny-io](https://github.com/sanny-io).
+
+- [zenstack-kit](https://github.com/olup/zenstack-kit)
+
+    Drizzle-kit like CLI tooling for ZenStack schemas with Prisma-compatible migrations. Made by [Olup](https://github.com/olup).
+
+- [zenstack-live](https://github.com/visualbravo/zenstack-live)
+
+    Supercharge your ZenStack backend with realtime streaming capabilities. Made by [@sanny-io](https://github.com/sanny-io).
+
+- [zenstack-pinia-colada](https://github.com/genu/zenstack-pinia-colada)
+
+    [Pinia Colada](https://pinia-colada.esm.dev/) client for ZenStack v3 - The Smart Data Fetching Layer for Vue 3. Made by [Eugen Istoc](https://github.com/genu).
+
+- [zenstack-trpc](https://github.com/olup/zenstack-trpc)
+
+    Auto-generate fully type-safe [tRPC](https://trpc.io) routers from ZenStack V3 schemas. Made by [Olup](https://github.com/olup).

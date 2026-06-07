@@ -74,6 +74,29 @@ Each skill is a directory containing a `SKILL.md` file with YAML frontmatter (`n
 `description`) followed by the instructions an agent loads on demand. This is the structure the
 [`skills` CLI](https://github.com/vercel-labs/skills) and [skills.sh](https://skills.sh) discover.
 
+## References
+
+The [`references/`](references) folder contains plain-markdown copies of the official ZenStack
+documentation (`docs/docs` in the [`zenstack-docs`](https://github.com/zenstackhq/zenstack-docs)
+submodule), with all Docusaurus/MDX scaffolding stripped. They're the source material the skills are
+distilled from, kept in the repo so an agent can grep/read the full docs offline.
+
+They're produced by [`scripts/generate-references.ts`](scripts/generate-references.ts):
+
+```bash
+# one-time: pull the docs + embedded code-repos submodules
+git submodule update --init --recursive
+
+# regenerate references/ from docs/docs
+npm install
+npm run generate:references   # or: npx tsx scripts/generate-references.ts
+```
+
+The generator only reads `docs/docs` (not `versioned_docs`, `blog`, etc.), mirrors the directory
+structure into `references/`, converts MDX components and admonitions to plain markdown, inlines
+imported markdown partials, and — for `<StackBlitzGithub>` embeds — inlines the referenced source
+files from `docs/code-repos` as fenced code blocks.
+
 ## Contributing
 
 To add a skill, create `skills/<skill-name>/SKILL.md` with `name` and `description` frontmatter and

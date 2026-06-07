@@ -1,0 +1,13 @@
+{
+  "name": "zenstack-skills",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Agent skills for ZenStack, published to skills.sh",
+  "type": "module",
+  "scripts": {
+    "generate:references": "tsx scripts/generate-references.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

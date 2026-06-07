@@ -1,0 +1,21 @@
+# Sample Projects
+
+You can find sample projects in the [samples](https://github.com/zenstackhq/zenstack-v3/tree/main/samples) folder of the GitHub repository. New samples will continue to be added.
+
+## ORM Sample
+
+https://github.com/zenstackhq/zenstack-v3/tree/main/samples/orm
+
+A simple TypeScript application that demonstrates how to model a minimum blog app and how to use the ORM client to query the database.
+
+## Multi-Tenant Todo
+
+https://github.com/zenstackhq/v3-sample-todo-nextjs
+
+A multi-tenant Todo app built with Next.js, Auth.js, TanStack Query, and ZenStack v3.
+
+## Rallly
+
+https://github.com/zenstackhq/rallly
+
+[Rallly](https://github.com/lukevella/rallly) is an open-source scheduling and collaboration tool designed to make organizing events and meetings easier. This repo is a fork of the original Rallly repo, replaced Prisma with ZenStack v3.

@@ -1,0 +1,18 @@
+# Roadmap
+
+This is a list of major features that are planned for the future releases of ZenStack v3. Although no specific timeline is promised, the order roughly represents the priority of these features.
+
+- [x] Row-Level access control
+- [x] Data validation
+- [x] Performance benchmark
+- [x] Query-as-a-Service (automatic CRUD API)
+- [x] TanStack Query integration
+- [x] Databases
+    - [x] MySQL
+- [x] Field-level access control
+- [x] Zod utility
+- [x] OpenAPI spec generation
+- [ ] Custom functions
+- [x] Custom procedures
+- [ ] Soft delete
+- [ ] Audit trail
