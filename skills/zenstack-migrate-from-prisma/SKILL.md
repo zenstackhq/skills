@@ -54,6 +54,8 @@ schema is valid ZModel. Optional cleanup:
 - If you used Prisma's multi-file/multi-schema feature, merge files using ZModel `import`
   statements.
 
+Run **`zen check`** to confirm the converted schema is valid (syntax + semantics) before moving on.
+
 Once moved, you can start adding ZenStack-only features that Prisma lacks — access policies
 (`zenstack-access-control`), `@@delegate` polymorphism, typed JSON, mixins, computed fields
 (`zenstack-schema-modeling`).

@@ -78,6 +78,7 @@ The CLI is invoked as `zen` (or `zenstack` — equivalent). Add scripts to `pack
 
 | Command | Purpose |
 | ------- | ------- |
+| `zen check` | Validate `schema.zmodel` for syntax and semantic errors. Run this after editing the schema (before `zen generate`). |
 | `zen generate` | Compile `schema.zmodel` → TypeScript. **Run after every schema change**, before using the client. Flags: `--schema <path>`, `--output <path>`. |
 | `zen db push` | Push schema to the DB **without** a migration file. Dev/testing only — never in production. |
 | `zen db pull` | Introspect an existing DB and update the ZModel schema (v3.4.0+, experimental). Can overwrite your schema — back up / use source control first. |

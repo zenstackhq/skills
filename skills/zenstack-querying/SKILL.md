@@ -167,7 +167,8 @@ model Event {
 ```
 
 Validation runs before access policies and before the database is touched. For access control see
-`zenstack-access-control`.
+`zenstack-access-control`. After editing validation rules (or any ZModel — including `procedure`
+declarations), run **`zen check`** to validate the schema before `zen generate`.
 
 ## Transactions — `$transaction`
 

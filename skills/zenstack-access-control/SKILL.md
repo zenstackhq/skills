@@ -9,6 +9,9 @@ ZenStack enforces access policies declared in ZModel at the ORM layer. Policies 
 models (see `zenstack-schema-modeling`); enforcement is opt-in via a runtime plugin. For client/query
 basics — and for **data validation** — see `zenstack-querying`.
 
+After editing policies, run **`zen check`** to validate the schema (policy expressions included) for
+syntax and semantic errors before `zen generate`.
+
 ## Runtime setup (required for policies to apply)
 
 Policies do nothing until you (1) declare the plugin in the schema and (2) install it on the client.
