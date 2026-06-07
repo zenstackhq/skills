@@ -1,6 +1,6 @@
 ---
 name: zenstack-querying
-description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, or handling ORMError.
+description: Query and mutate data with the ZenStack V3 client. Use when creating a ZenStackClient (SQLite/Postgres/MySQL dialect), using the Prisma-compatible ORM API (findMany/create/update/etc.), relation queries (select/include), data validation on writes (@email/@length/@@validate), transactions, the Kysely query-builder escape hatch ($qb / $expr), custom procedures, raw SQL, or handling ORMError.
 ---
 
 # ZenStack V3 — Querying
@@ -128,6 +128,46 @@ await db.user.findMany({
 
 Nested writes inside `create`/`update`/`upsert` can `create`, `connect`, `disconnect`, update, and
 delete related records (deeply), all within a transaction.
+
+## Data validation
+
+Validation rules are declared in ZModel and enforced by the ORM on `create`/`update` inputs (not on
+the query builder / raw SQL). Failures throw `ORMError` with reason `INVALID_INPUT`. Each attribute
+takes an optional trailing `message`.
+
+**Field attributes**
+
+- String length / lists: `@length(min?, max?)`
+- String content: `@startsWith`, `@endsWith`, `@contains`, `@email`, `@url`, `@phone` (E.164),
+  `@datetime` (ISO 8601), `@regex(pattern)`
+- String transforms (applied before save): `@lower`, `@upper`, `@trim`
+- Numbers: `@gt`, `@gte`, `@lt`, `@lte`
+
+```zmodel
+model User {
+    email    String  @email("Invalid email")
+    password String  @length(8, 128)
+    age      Int     @gte(0) @lte(150)
+    website  String? @url
+}
+```
+
+**Model-level `@@validate(condition, message?, path?)`** for cross-field rules, with helper
+functions: `now()`, `length()`, `startsWith`/`endsWith`/`contains`, `isEmail`/`isUrl`/`isPhone`/
+`isDateTime`, `regex()`, `has`/`hasSome`/`hasEvery`/`isEmpty`.
+
+```zmodel
+model Event {
+    startDate DateTime
+    endDate   DateTime
+    tags      String[]
+    @@validate(endDate > startDate, "End date must be after start date")
+    @@validate(!isEmpty(tags), "At least one tag is required")
+}
+```
+
+Validation runs before access policies and before the database is touched. For access control see
+`zenstack-access-control`.
 
 ## Transactions — `$transaction`
 
@@ -257,5 +297,7 @@ Full ZenStack documentation for this topic is bundled under [`references/`](refe
 - [api-raw-sql.md](references/api-raw-sql.md) — raw SQL
 - [query-builder.md](references/query-builder.md) — the Kysely `$qb` escape hatch
 - [custom-procedures.md](references/custom-procedures.md) — custom procedures
+- [validation.md](references/validation.md) — data validation
+- [input-validation-reference.md](references/input-validation-reference.md) — validation attribute reference
 - [inferred-types.md](references/inferred-types.md) — inferred model/input types
 - [errors.md](references/errors.md) — `ORMError` and error reasons

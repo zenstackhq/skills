@@ -1,13 +1,13 @@
 ---
 name: zenstack-access-control
-description: Add access control and data validation to a ZenStack V3 schema. Use when writing access policies (@@allow / @@deny), the auth() function, field-level rules, post-update rules, the policy plugin and $setAuth runtime setup, or validation attributes (@email, @length, @@validate, etc.).
+description: Add access control to a ZenStack V3 schema. Use when writing access policies (@@allow / @@deny), the auth() function, field-level rules, post-update rules, or setting up the policy plugin and $setAuth runtime. (For data validation — @email/@length/@@validate — see zenstack-querying.)
 ---
 
-# ZenStack V3 — Access Control & Validation
+# ZenStack V3 — Access Control
 
-ZenStack enforces access policies and validation rules declared in ZModel at the ORM layer. Policies
-live next to your models (see `zenstack-schema-modeling`); enforcement is opt-in via a runtime
-plugin. For client/query basics see `zenstack-querying`.
+ZenStack enforces access policies declared in ZModel at the ORM layer. Policies live next to your
+models (see `zenstack-schema-modeling`); enforcement is opt-in via a runtime plugin. For client/query
+basics — and for **data validation** — see `zenstack-querying`.
 
 ## Runtime setup (required for policies to apply)
 
@@ -153,48 +153,13 @@ model Post {
 If a model has no `post-update` rule, an update only needs to pass `update`. If it has any, at least
 one `@@allow('post-update', ...)` must pass.
 
-## Data validation
-
-Validation runs on ORM `create`/`update` inputs (not on query-builder/raw SQL). Failures throw
-`ORMError` with reason `INVALID_INPUT`. Each attribute takes an optional trailing `message`.
-
-**Field attributes**
-
-- String length / lists: `@length(min?, max?)`
-- String content: `@startsWith`, `@endsWith`, `@contains`, `@email`, `@url`, `@phone` (E.164),
-  `@datetime` (ISO 8601), `@regex(pattern)`
-- String transforms (applied before save): `@lower`, `@upper`, `@trim`
-- Numbers: `@gt`, `@gte`, `@lt`, `@lte`
-
-```zmodel
-model User {
-    email    String  @email("Invalid email")
-    password String  @length(8, 128)
-    age      Int     @gte(0) @lte(150)
-    website  String? @url
-}
-```
-
-**Model-level `@@validate(condition, message?, path?)`** for cross-field rules, with helper
-functions: `now()`, `length()`, `startsWith`/`endsWith`/`contains`, `isEmail`/`isUrl`/`isPhone`/
-`isDateTime`, `regex()`, `has`/`hasSome`/`hasEvery`/`isEmpty`.
-
-```zmodel
-model Event {
-    startDate DateTime
-    endDate   DateTime
-    tags      String[]
-    @@validate(endDate > startDate, "End date must be after start date")
-    @@validate(!isEmpty(tags), "At least one tag is required")
-}
-```
-
 ## Execution order & error reasons
 
-Per mutation: **validate input → check policies → mutate DB**. `ORMError.reason` values you'll see:
-`INVALID_INPUT` (validation), `REJECTED_BY_POLICY` (policy), `NOT_FOUND` (missing or filtered by
-read policy). `REJECTED_BY_POLICY` further carries `rejectedByPolicyReason`: `NO_ACCESS`,
-`CANNOT_READ_BACK` (mutation allowed but result not readable back), or `OTHER`.
+Per mutation, policies are checked **before** the database is touched (after any input validation —
+see `zenstack-querying`). Policy-related `ORMError.reason` values: `REJECTED_BY_POLICY` (policy) and
+`NOT_FOUND` (missing or filtered out by a read policy). `REJECTED_BY_POLICY` further carries
+`rejectedByPolicyReason`: `NO_ACCESS`, `CANNOT_READ_BACK` (mutation allowed but result not readable
+back), or `OTHER`.
 
 ## Limitations
 
@@ -202,7 +167,6 @@ read policy). `REJECTED_BY_POLICY` further carries `rejectedByPolicyReason`: `NO
 - Raw SQL (`$queryRaw`/`$executeRaw`) and query-builder access bypass policies. Allow raw SQL while
   the policy plugin is installed only via `new PolicyPlugin({ dangerouslyAllowRawSql: true })`
   (v3.5.0+).
-- Field validation applies to ORM APIs only, not the query builder.
 
 ## Reference docs
 
@@ -213,7 +177,5 @@ Full ZenStack documentation for this topic is bundled under [`references/`](refe
 - [enforcing-policies.md](references/enforcing-policies.md) — policy plugin + `$setAuth` runtime
 - [post-update.md](references/post-update.md) — `post-update` rules and `before()`
 - [field-level.md](references/field-level.md) — field-level read/update policies
-- [validation.md](references/validation.md) — data validation
-- [input-validation-reference.md](references/input-validation-reference.md) — validation attribute reference
-- [zmodel-expression-reference.md](references/zmodel-expression-reference.md) — policy/validation expression reference
+- [zmodel-expression-reference.md](references/zmodel-expression-reference.md) — policy expression reference
 - [policy-plugin-reference.md](references/policy-plugin-reference.md) — policy plugin options
