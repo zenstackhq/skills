@@ -23,8 +23,6 @@ package: `npm install @zenstackhq/server`.
 
 ## API handlers
 
-In V3 you **must explicitly pass an `apiHandler`** to the adapter.
-
 **RPC** — mirrors the ORM API 1:1. Routes look like `GET /post/findMany?q=<urlencoded-json>` and
 `POST /post/create` (body `{ data: ... }`); responses are wrapped in `{ data: ... }`.
 
@@ -45,11 +43,11 @@ RPC endpoints: every ORM op (`findMany`, `findUnique`, `findFirst`, `count`, `ag
 `PUT|PATCH /post/:id`, `DELETE /post/:id`, plus relationship routes.
 
 ```ts
-import { RestApiHandler } from '@zenstackhq/server/api';   // note: RestApiHandler, not RESTful
+import { RestApiHandler } from '@zenstackhq/server/api'; // note: RestApiHandler, not RESTful
 
 const apiHandler = new RestApiHandler({
     schema,
-    endpoint: 'http://localhost:3000/api',   // required — used to build resource links
+    endpoint: 'http://localhost:3000/api', // required — used to build resource links
 });
 ```
 
@@ -93,10 +91,13 @@ raw `db` to bypass policies (rarely what you want for a public API).
 import { ZenStackMiddleware } from '@zenstackhq/server/express';
 
 app.use(express.json());
-app.use('/api/model', ZenStackMiddleware({
-    apiHandler,
-    getClient: (req) => authDb.$setAuth(getSessionUser(req)),
-}));
+app.use(
+    '/api/model',
+    ZenStackMiddleware({
+        apiHandler,
+        getClient: (req) => authDb.$setAuth(getSessionUser(req)),
+    }),
+);
 ```
 
 (Optional `sendResponse: false` writes to `res.locals` and calls `next()` instead.)
@@ -107,7 +108,7 @@ app.use('/api/model', ZenStackMiddleware({
 import { ZenStackFastifyPlugin } from '@zenstackhq/server/fastify';
 
 server.register(ZenStackFastifyPlugin, {
-    prefix: '/api/model',                 // required
+    prefix: '/api/model', // required
     apiHandler,
     getClient: (req) => authDb.$setAuth(getSessionUser(req)),
 });
@@ -124,7 +125,13 @@ const handler = NextRequestHandler({
     getClient: (req) => authDb.$setAuth(getSessionUser(req)),
     useAppDir: true,
 });
-export { handler as GET, handler as POST, handler as PUT, handler as PATCH, handler as DELETE };
+export {
+    handler as GET,
+    handler as POST,
+    handler as PUT,
+    handler as PATCH,
+    handler as DELETE,
+};
 ```
 
 ### Next.js — Pages Router
@@ -161,7 +168,11 @@ const handler = SvelteKitRouteHandler({
     apiHandler,
     getClient: (event) => authDb.$setAuth(getSessionUser(event)),
 });
-export const GET = handler, POST = handler, PUT = handler, PATCH = handler, DELETE = handler;
+export const GET = handler,
+    POST = handler,
+    PUT = handler,
+    PATCH = handler,
+    DELETE = handler;
 ```
 
 (Legacy `SvelteKitHandler` in `hooks.server.ts` with a `prefix` option is deprecated.)
@@ -171,10 +182,13 @@ export const GET = handler, POST = handler, PUT = handler, PATCH = handler, DELE
 ```ts
 import { createHonoHandler } from '@zenstackhq/server/hono';
 
-app.use('/api/model/*', createHonoHandler({
-    apiHandler,
-    getClient: (ctx) => authDb.$setAuth(getSessionUser(ctx)),
-}));
+app.use(
+    '/api/model/*',
+    createHonoHandler({
+        apiHandler,
+        getClient: (ctx) => authDb.$setAuth(getSessionUser(ctx)),
+    }),
+);
 ```
 
 ### Elysia
@@ -182,11 +196,15 @@ app.use('/api/model/*', createHonoHandler({
 ```ts
 import { createElysiaHandler } from '@zenstackhq/server/elysia';
 
-app.group('/crud', (app) => app.use(createElysiaHandler({
-    apiHandler,
-    basePath: '/api/model',
-    getClient: (ctx) => authDb.$setAuth(getSessionUser(ctx)),
-})));
+app.group('/crud', (app) =>
+    app.use(
+        createElysiaHandler({
+            apiHandler,
+            basePath: '/api/model',
+            getClient: (ctx) => authDb.$setAuth(getSessionUser(ctx)),
+        }),
+    ),
+);
 ```
 
 ### TanStack Start
@@ -200,7 +218,15 @@ const handler = TanStackStartHandler({
     getClient: (req) => authDb.$setAuth(getSessionUser(req)),
 });
 export const Route = createFileRoute('/api/$')({
-    server: { handlers: { GET: handler, POST: handler, PUT: handler, PATCH: handler, DELETE: handler } },
+    server: {
+        handlers: {
+            GET: handler,
+            POST: handler,
+            PUT: handler,
+            PATCH: handler,
+            DELETE: handler,
+        },
+    },
 });
 ```
 
@@ -219,7 +245,9 @@ hand-craft requests, include the superjson `meta` under a `serialization` key
 import { createClient } from '@zenstackhq/fetch-client';
 import { schema } from '~/zenstack/schema';
 
-const client = createClient(schema, { endpoint: 'https://example.com/api/model' });
+const client = createClient(schema, {
+    endpoint: 'https://example.com/api/model',
+});
 const users = await client.user.findMany({ include: { posts: true } });
 await client.post.create({ data: { title: 'Hello' } });
 ```
@@ -229,7 +257,10 @@ Add auth via a custom `fetch`:
 ```ts
 import type { FetchFn } from '@zenstackhq/fetch-client';
 const fetchFn: FetchFn = (url, init) =>
-    fetch(url, { ...init, headers: { ...init?.headers, authorization: `Bearer ${getToken()}` } });
+    fetch(url, {
+        ...init,
+        headers: { ...init?.headers, authorization: `Bearer ${getToken()}` },
+    });
 createClient(schema, { endpoint, fetch: fetchFn });
 ```
 
@@ -246,8 +277,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { QuerySettingsProvider } from '@zenstackhq/tanstack-query/react';
 
 <QueryClientProvider client={new QueryClient()}>
-    <QuerySettingsProvider value={{ endpoint: '/api/model' }}>{children}</QuerySettingsProvider>
-</QueryClientProvider>
+    <QuerySettingsProvider value={{ endpoint: '/api/model' }}>
+        {children}
+    </QuerySettingsProvider>
+</QueryClientProvider>;
 ```
 
 Hooks mirror the ORM client via `useClientQueries(schema)`:
@@ -281,7 +314,7 @@ app.get('/api/openapi.json', async (_req, res) => {
     const spec = await apiHandler.generateSpec({
         title: 'My Blog API',
         version: '2.0.0',
-        respectAccessPolicies: true,   // emit 403 responses for policy-protected models
+        respectAccessPolicies: true, // emit 403 responses for policy-protected models
     });
     res.json(spec);
 });

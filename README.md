@@ -54,6 +54,7 @@ npx skills use zenstackhq/skills@zenstack-access-control | claude
 | [`zenstack-access-control`](skills/zenstack-access-control/SKILL.md) | Access policies (`@@allow`/`@@deny`), the `auth()` function, field-level rules, post-update rules, and data validation. |
 | [`zenstack-querying`](skills/zenstack-querying/SKILL.md) | Creating the `ZenStackClient`, the Prisma-compatible ORM API, relation queries, transactions, the Kysely query builder, and error handling. |
 | [`zenstack-crud-server`](skills/zenstack-crud-server/SKILL.md) | Automatic CRUD web APIs ("Query as a Service"): RPC/REST handlers, server adapters (Express, Next.js, Fastify, Nuxt, SvelteKit, Hono, Elysia, TanStack Start), client SDKs (fetch-client, TanStack Query), and OpenAPI generation. |
+| [`zenstack-plugin-dev`](skills/zenstack-plugin-dev/SKILL.md) | Developing plugins: custom ZModel attributes/functions, CLI code generators (`CliPlugin`), and runtime plugins (`$use`/`definePlugin` with `onQuery`/`onKyselyQuery`/`onEntityMutation`, client extension, computed fields). |
 
 All skills target **ZenStack V3** (the current major line). The full product documentation lives at
 [zenstack.dev/docs](https://zenstack.dev/docs).
@@ -67,6 +68,7 @@ skills/
   zenstack-access-control/SKILL.md
   zenstack-querying/SKILL.md
   zenstack-crud-server/SKILL.md
+  zenstack-plugin-dev/SKILL.md
   zenstack-migrate-from-prisma/SKILL.md
   zenstack-migrate-from-v2/SKILL.md
   zenstack-db-migration/SKILL.md
