@@ -316,7 +316,7 @@ function renderStackBlitz(attrs: Attrs, protector: Protector): string {
     return protector.protect('\n' + blocks.join('\n') + '\n');
 }
 
-const renderPackageInstall: Renderer = (attrs) => {
+const renderPackageInstall = (attrs: Attrs): string => {
     const deps = attrList(attrs, 'dependencies');
     const dev = attrList(attrs, 'devDependencies');
     const lines: string[] = [];
@@ -325,14 +325,14 @@ const renderPackageInstall: Renderer = (attrs) => {
     return codeBlock('bash', lines.join('\n'));
 };
 
-const renderPackageUninstall: Renderer = (attrs) => {
+const renderPackageUninstall = (attrs: Attrs): string => {
     const deps = attrList(attrs, 'dependencies');
     return codeBlock('bash', `npm uninstall ${deps.join(' ')}`);
 };
 
-const renderPackageExec: Renderer = (attrs) => codeBlock('bash', `npx ${attrStr(attrs, 'command') ?? ''}`);
+const renderPackageExec = (attrs: Attrs): string => codeBlock('bash', `npx ${attrStr(attrs, 'command') ?? ''}`);
 
-const renderPackageDlx: Renderer = (attrs) => {
+const renderPackageDlx = (attrs: Attrs): string => {
     const pkg = attrStr(attrs, 'package') ?? '';
     const args = attrStr(attrs, 'args') ?? '';
     return codeBlock('bash', `npx ${pkg}${args ? ` ${args}` : ''}`.trim());

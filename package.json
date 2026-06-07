@@ -5,9 +5,12 @@
   "description": "Agent skills for ZenStack, published to skills.sh",
   "type": "module",
   "scripts": {
-    "generate:references": "tsx scripts/generate-references.ts"
+    "generate:references": "tsx scripts/generate-references.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "tsx": "^4.19.2"
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }
