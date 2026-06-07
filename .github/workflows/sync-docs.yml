@@ -1,12 +1,12 @@
 name: Sync docs & regenerate references
 
-# Triggered when the zenstackhq/zenstack-docs repo pushes to main, via a
-# repository_dispatch event sent from that repo (see the sender workflow in
-# .github/sender-workflow.example.yml — add it to zenstack-docs).
-# Also runnable manually from the Actions tab.
+# Polls zenstackhq/zenstack-docs on a schedule and regenerates references/
+# ONLY when the docs repo's top-level `docs/` folder changed since the commit
+# our submodule is currently pinned to (changes to blog/, src/, etc. are
+# ignored). Also runnable manually from the Actions tab.
 on:
-  repository_dispatch:
-    types: [docs-updated]
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours (UTC) — adjust as desired
   workflow_dispatch:
 
 # Never let two syncs race on the same branch.
@@ -23,37 +23,59 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        # submodules are populated explicitly below so we can bump docs to
-        # the latest main rather than its pinned commit
+        # the `docs` submodule is handled explicitly below
 
-      - name: Update docs submodule to latest main
+      - name: Check for docs/ changes upstream
+        id: check
         run: |
           git submodule sync docs
-          # bump the `docs` submodule to the tip of its tracked branch (main)
-          git submodule update --init --remote docs
+          git submodule update --init docs
+          old="$(git -C docs rev-parse HEAD)"
+          git -C docs fetch --quiet origin main
+          new="$(git -C docs rev-parse origin/main)"
+          echo "new=$new" >> "$GITHUB_OUTPUT"
+          if [ "$old" = "$new" ]; then
+            echo "docs main unchanged ($old) — nothing to do."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif git -C docs diff --quiet "$old" "$new" -- docs; then
+            echo "docs main moved ${old:0:7} -> ${new:0:7} but the docs/ folder is unchanged — skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs/ folder changed (${old:0:7} -> ${new:0:7}) — regenerating."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update docs submodule to latest main
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git -C docs checkout --quiet "${{ steps.check.outputs.new }}"
           # populate docs' own nested submodules (code-repos/*) at the
-          # commits pinned by the freshly-updated docs
+          # commits pinned by the updated docs
           git -C docs submodule update --init --recursive
 
       - name: Setup Node.js
+        if: steps.check.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
       - name: Install dependencies
+        if: steps.check.outputs.changed == 'true'
         run: npm ci
 
       - name: Generate references
+        if: steps.check.outputs.changed == 'true'
         run: npm run generate:references
 
       - name: Commit & push changes
+        if: steps.check.outputs.changed == 'true'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No file changes after regeneration."
             exit 0
           fi
           docs_sha="$(git -C docs rev-parse --short HEAD)"
