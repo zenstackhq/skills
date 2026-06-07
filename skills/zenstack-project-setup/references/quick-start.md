@@ -1,1 +1,1 @@
-../../../references/orm/quick-start.md
+../../../references/quick-start.md
