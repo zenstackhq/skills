@@ -2,6 +2,10 @@
 
 > **Available since v3.8.0**
 
+> **Preview Feature**
+
+Soft delete plugin is in preview and may be subject to breaking changes in future releases.
+
 The `@zenstackhq/plugin-soft-delete` plugin implements **soft delete** by intercepting Kysely queries at runtime. Instead of physically removing rows, delete operations mark them with a timestamp, and reads automatically exclude the marked rows.
 
 ## How It Works
