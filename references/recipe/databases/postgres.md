@@ -23,3 +23,26 @@ const db = new ZenStackClient(schema, {
     }),
 });
 ```
+
+## Using PGlite
+
+> **No Official Support**
+
+The PGlite dialect is not officially supported or tested by ZenStack, but you may evaluate it and [report your findings and interest on the GitHub issue](https://github.com/zenstackhq/zenstack/issues/2710).
+
+```bash
+npm install @electric-sql/pglite kysely
+```
+
+```ts
+import { schema } from './zenstack/schema';
+import { PGlite } from '@electric-sql/pglite';
+import { ZenStackClient } from '@zenstackhq/orm';
+import { PGliteDialect } from 'kysely';
+
+const db = new ZenStackClient(schema, {
+    dialect: new PGliteDialect({
+        pglite: new PGlite(),
+    }),
+});
+```

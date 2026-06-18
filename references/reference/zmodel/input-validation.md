@@ -85,6 +85,26 @@ All field-level attributes have a `message` parameter that allows you to provide
 
         Requires a string field to be a valid ISO 8601 datetime.
 
+    - `@date`
+
+        > **Available since v3.8.0**
+
+        ```zmodel
+        @date(_ message: String?)
+        ```
+
+        Requires a string field to be a valid ISO 8601 date (e.g. `2024-01-31`).
+
+    - `@time`
+
+        > **Available since v3.8.0**
+
+        ```zmodel
+        @time(_ precision: Int?, _ message: String?)
+        ```
+
+        Requires a string field to be a valid ISO 8601 time (e.g. `14:30:00`). The optional `precision` argument constrains the number of fractional-second digits allowed.
+
     - `@regex`
 
         ```zmodel
@@ -226,6 +246,26 @@ All field-level attributes have a `message` parameter that allows you to provide
     ```
 
   Checks if a string field is a valid ISO 8601 datetime.
+
+- `isDate()`
+
+    > **Available since v3.8.0**
+
+    ```zmodel
+    function isDate(field: String): Boolean {}
+    ```
+
+  Checks if a string field is a valid ISO 8601 date.
+
+- `isTime()`
+
+    > **Available since v3.8.0**
+
+    ```zmodel
+    function isTime(field: String, precision: Int?): Boolean {}
+    ```
+
+  Checks if a string field is a valid ISO 8601 time. The optional `precision` argument constrains the number of fractional-second digits allowed.
 
 - `regex()`
 
