@@ -190,6 +190,10 @@ model User {
 
 These attributes control what data type is used when the [migration engine](../orm/migration.md) maps the schema to DDL. You can find a complete list of native type attributes in the [ZModel Language Reference](../reference/zmodel/attribute#native-type-mapping-attributes).
 
+> **🔋 ZModel vs Prisma Schema**
+
+Unlike PSL, all native type mapping attributes in ZModel use the `@db.` prefix, regardless of the name of your [`datasource`](./datasource.md).
+
 ## Name mapping
 
 Quite often, you want to use a different naming scheme for your models and fields than the database. You can achieve that with the `@map` and `@@map` attribute. The ORM respects the mapping when generating queries, and the migration engine uses it to generate the DDL.

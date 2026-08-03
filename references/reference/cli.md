@@ -321,9 +321,24 @@ Options:
   -o, --output <path>        output directory for `zen generate` command
   -d, --databaseUrl <url>    database connection URL
   -l, --logLevel <level...>  Query log levels (e.g., query, error)
+  --introspect               introspect the database to generate a schema when no schema file is found
   --no-version-check         do not check for new version
   -h, --help                 Show this help message
 ```
+
+#### The `--introspect` option
+
+> **Available since v3.9.0**
+
+The `--introspect` option lets you start the proxy server without a ZModel schema file. It introspects the database (determined by the `-d, --databaseUrl` option or the `DATABASE_URL` environment variable), generates a schema from it, and runs code generation before starting the server. It's useful for bootstrapping from an existing database.
+
+```bash
+npx @zenstackhq/cli studio --introspect -d <databaseUrl>
+```
+
+> **Warning**
+
+The generated schema doesn't contain any access policies, so all data is accessible without restriction. Edit the schema to add access policies as needed.
 
 ## Overriding Default Options
 
