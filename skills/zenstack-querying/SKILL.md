@@ -159,6 +159,101 @@ await db.user.aggregate({ _avg: { postCount: true } });
 The callback's second arg is a `context` with `modelAlias` — use `sql.ref(\`${modelAlias}.id\`)`
 (import `sql` from `@zenstackhq/orm/helpers`) to qualify the containing model's columns on conflicts.
 
+Rules for every implementation:
+
+- Return the expression **synchronously**. The callback builds SQL — never `await` inside it.
+- You are writing **raw Kysely**, so bind the dialect's native value. A JS `Date` fails to bind on
+  SQLite — pass `date.toISOString()`.
+- A `Boolean @computed` field must return `OperandExpression<boolean>`. A bare comparison
+  (`eb('authorId', '=', 1)`) is Kysely's `SqlBool` (`boolean | 0 | 1`) and **does not typecheck** —
+  use `sql<boolean>`, `eb.lit()`, or `eb.case()`.
+
+### Parameterized computed fields (v3.9.0+)
+
+A field declared with parameters (`recentPostCount(since: DateTime) Int @computed`) takes its
+arguments at query time. The implementation receives them as a **third** parameter, after `eb` and
+`context`:
+
+```ts
+computedFields: {
+    User: {
+        // `args` is typed from the declared parameters: `{ since: Date }`
+        recentPostCount: (eb, { modelAlias }, args) =>
+            eb.selectFrom('Post')
+                .whereRef('Post.authorId', '=', sql.ref(`${modelAlias}.id`))
+                .where('Post.createdAt', '>=', args.since.toISOString())
+                .select(({ fn }) => fn.countAll<number>().as('count')),
+    },
+}
+```
+
+- A parameterized field is **never returned by default** — it has no arguments until you pass them.
+  Request it explicitly via `select`/`include`.
+- `args` is **plain data, never a callback**, so it serializes — a frontend can drive the query
+  through the automatic CRUD service and it stays one policy-checked statement.
+- **Every** site that accepts the field takes `args`, each in a fixed shape:
+
+| Site | Shape |
+| ---- | ----- |
+| `select` / `include` | `{ recentPostCount: { args: { since } } }` |
+| `where` / `having` | `{ recentPostCount: { args: { since }, gte: 5 } }` |
+| `orderBy` | `{ recentPostCount: { args: { since }, sort: 'desc' } }` |
+| `aggregate` | `_sum: { recentPostCount: { args: { since } } }` |
+| `groupBy` → `by` | `[{ field: 'recentPostCount', args: { since } }]` |
+
+- `distinct` and `omit` have no `args` slot, so they **reject** a parameterized field — as does
+  `groupBy` → `by` given the bare field name instead of the keyed `{ field, args }` entry.
+- Grouping **by** a computed field implemented as a *correlated subquery* follows the database's own
+  rule for correlated `GROUP BY`: PostgreSQL rejects it, SQLite allows it. Row-local expressions
+  group everywhere.
+
+### `client` in the context (v3.9.1+)
+
+`context.client` is the client executing the query. Use it to make a computed field depend on the
+caller: `client.$auth` is the identity bound by `$setAuth()`, and `undefined` when anonymous.
+
+```ts
+computedFields: {
+    Post: {
+        isMine: (eb, { client }) =>
+            client.$auth
+                ? sql<boolean>`${eb.ref('authorId')} = ${client.$auth.id}`
+                : eb.lit(false),
+    },
+}
+
+await db.$setAuth({ id: 1 }).post.findMany({ where: { isMine: true } });
+```
+
+- `$setAuth()` returns a **new** client, so each user-bound client evaluates the field against its
+  own identity and the original is left unchanged. Use the per-request client; keep no module-level
+  auth state.
+- `$setAuth()`/`$auth` are on the base client — reading `$auth` here does **not** require the policy
+  plugin.
+- `client` is for reading per-client state only. **Never** `await` a query on it (see the synchronous
+  rule above).
+
+Combined — parameterized *and* client-aware:
+
+```ts
+computedFields: {
+    Post: {
+        // comments *I* left on this post since `args.since`
+        myCommentCount: (eb, { modelAlias, client }, args) =>
+            eb.selectFrom('Comment')
+                .whereRef('Comment.postId', '=', sql.ref(`${modelAlias}.id`))
+                .where('Comment.authorId', '=', client.$auth?.id ?? -1)
+                .where('Comment.createdAt', '>=', args.since.toISOString())
+                .select(({ fn }) => fn.countAll<number>().as('count')),
+    },
+}
+
+await userDb.post.findMany({
+    where: { isMine: true },
+    select: { id: true, myCommentCount: { args: { since } } },
+});
+```
+
 ## Polymorphic models
 
 For models using `@@delegate` inheritance (see `zenstack-schema-modeling`), query via the usual model
