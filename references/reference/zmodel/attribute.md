@@ -400,6 +400,28 @@ model User {
 }
 ```
 
+### @@strict
+
+> **Available since v3.9.2**
+
+```zmodel
+attribute @@strict()
+```
+
+Indicates [strongly-typed JSON](../../orm/typed-json) should reject unknown fields.
+
+```zmodel
+model User {
+    id Int @id
+    profile Profile @json
+}
+
+type Profile {
+    name String
+    @@strict
+}
+```
+
 ### @id
 
 ```zmodel
