@@ -7,10 +7,6 @@ description: ZenStack custom procedures
 > This amazing feature is implemented by [Mike Willbanks
 ](https://github.com/mwillbanks).
 
-> **Preview Feature**
-
-Custom procedure is in preview and may be subject to breaking changes in future releases.
-
 > **Available since v3.2.0**
 
 > **🔋 ZModel vs Prisma Schema**

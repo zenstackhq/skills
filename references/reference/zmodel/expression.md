@@ -69,6 +69,27 @@ posts?[p, p.published && comments?[c, c.published]]
 
 The `in` keyword can be used to check if a value exists in a list. E.g., `value in [1, 2, 3]`.
 
+> **Available since v3.10.0**
+
+An [enum](./enum.md) can also be used as the list, in which case it stands for all of its members. This is handy for checking that a `String` field holds one of an enum's values:
+
+```zmodel
+enum PostStatus {
+    DRAFT
+    ACTIVE
+    CANCELLED
+}
+
+model Post {
+    id     String @id
+    status String
+
+    @@validate(status in PostStatus)
+}
+```
+
+Enums can only be referenced this way inside access policy and validation attributes, like `@@allow`, `@@deny`, `@allow`, `@deny`, and `@@validate`.
+
 ### Function Calls
 
 Functions can be called using the standard syntax: `functionName(arg1, arg2, ...)`. See [Functions](./function.md) for the list of available functions.

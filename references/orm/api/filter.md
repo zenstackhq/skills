@@ -118,10 +118,6 @@ await db.post.findMany({
 
 ## Json filters
 
-> **Preview Feature**
-
-Json filter is in preview and may be subject to breaking changes in future releases.
-
 The query API supports flexible filtering on `Json` fields and allows you to reach into nested structures in the JSON data.
 
 ### Generic Json filters
@@ -330,3 +326,22 @@ async function main() {
 
 main();
 ```
+
+### Referencing the filtered model
+
+> **Available since v3.10.0**
+
+The `$expr` callback receives a second argument with a `modelAlias` field, the alias under which the filtered model is selected. In a top-level filter, it's simply the model name. Inside a relation filter, however, the related model is selected under a generated alias, so you need `modelAlias` to qualify references to its columns:
+
+```ts
+await db.post.findMany({
+    where: {
+        author: {
+            // `User.email` would fail here since the author is selected under a different alias
+            $expr: (eb, { modelAlias }) => eb(eb.ref(`${modelAlias}.email`), 'like', '%@zenstack.dev'),
+        },
+    },
+});
+```
+
+`modelAlias` is typed as the model name, so qualified references type-check as usual.

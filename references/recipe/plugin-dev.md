@@ -121,7 +121,7 @@ const cliPlugin: CliPlugin = {
         );
         if (passwordAttr) {
           const hasherArg = passwordAttr.args.find(
-            (arg) => arg.$resolvedParam.name === "hasher"
+            (arg) => arg.$resolvedParam?.name === "hasher"
           );
           const hasherName = hasherArg?.value
             ? (hasherArg.value as InvocationExpr).function.$refText
@@ -402,7 +402,7 @@ class PasswordHasherTransformer extends OperationNodeTransformer {
 }
 
 export class PasswordHasherPlugin<Schema extends SchemaDef = SchemaDef>
-  implements RuntimePlugin<Schema>
+  implements RuntimePlugin<Schema, {}, {}, {}>
 {
   id = "password-hasher";
 
